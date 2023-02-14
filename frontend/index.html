@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFIS — AI Financial Intelligence System</title>
+    
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <i class="fa-solid fa-chart-line-up logo-icon"></i>
+                <div class="logo-text">
+                    <span class="logo-title">AFIS</span>
+                    <span class="logo-subtitle">Financial Intelligence</span>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-tab="dashboard">
+                    <i class="fa-solid fa-table-columns"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-tab="chat">
+                    <i class="fa-solid fa-robot"></i> AI CFO Agent
+                </button>
+                <button class="nav-btn" data-tab="compliance">
+                    <i class="fa-solid fa-shield-halved"></i> NIST AI Audit & ETL
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
+                    <div class="user-info">
+                        <span class="username">Albert Oliveira</span>
+                        <span class="user-role">Founder & CEO</span>
+                    </div>
+                </div>
+                <div class="license-tag">MIT Open-Source</div>
+            </div>
+        </aside>
+        
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            
+            <!-- TOP BAR -->
+            <header class="top-bar">
+                <div class="header-title">
+                    <h1 id="page-title">Executive Dashboard</h1>
+                    <p id="page-subtitle" class="text-secondary">Overview of historical accounts and ML cash projections.</p>
+                </div>
+                <div class="header-badges">
+                    <span class="badge badge-success"><i class="fa-solid fa-shield-check"></i> NIST AI RMF Compliant</span>
+                    <span class="badge badge-navy">v1.0.0</span>
+                </div>
+            </header>
+            
+            <!-- TAB PANELS -->
+            <div class="tab-content">
+                
+                <!-- TAB 1: DASHBOARD -->
+                <section id="tab-dashboard" class="tab-panel active">
+                    
+                    <!-- KPI CARDS GRID -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-icon icon-cash"><i class="fa-solid fa-wallet"></i></div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Current Cash Balance</span>
+                                <h3 class="kpi-value" id="kpi-cash">$0.00</h3>
+                                <span class="kpi-trend text-success"><i class="fa-solid fa-arrow-trend-up"></i> Incls. Seed Capital</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon icon-runway"><i class="fa-solid fa-hourglass-half"></i></div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Cash Runway</span>
+                                <h3 class="kpi-value" id="kpi-runway">0.0 Months</h3>
+                                <span class="kpi-trend text-secondary" id="kpi-burnrate">Burn: $0/mo</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon icon-margin"><i class="fa-solid fa-chart-pie"></i></div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Net Profit Margin</span>
+                                <h3 class="kpi-value" id="kpi-margin">0.0%</h3>
+                                <span class="kpi-trend text-success" id="kpi-netprofit">Net: $0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- GRAPH CARD -->
+                    <div class="chart-container-card card-glass">
+                        <div class="card-header">
+                            <div>
+                                <h3>ML Time-Series Forecasting</h3>
+                                <p class="text-secondary text-small">Ridge Regression projections with confidence intervals (next 12 months)</p>
+                            </div>
+                            <div class="chart-legend-labels">
+                                <span class="legend-item"><span class="dot dot-actual"></span> Actuals</span>
+                                <span class="legend-item"><span class="dot dot-predicted"></span> Predicted</span>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="cashflowChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- BOTTOM GRID: LEDGER AND STATS -->
+                    <div class="bottom-grid">
+                        
+                        <!-- RECENT TRANSACTIONS -->
+                        <div class="card-glass flex-2">
+                            <div class="card-header">
+                                <h3>Recent Transactions</h3>
+                                <button class="btn btn-secondary btn-small" onclick="window.location.reload()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Category</th>
+                                            <th>Description</th>
+                                            <th>Type</th>
+                                            <th class="text-right">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transaction-rows">
+                                        <tr>
+                                            <td colspan="5" class="text-center text-secondary">Loading transactions...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- ADVISORY CARD -->
+                        <div class="card-glass flex-1 alert-advisory-card">
+                            <div class="card-header">
+                                <h3>CFO Risk Assessment</h3>
+                            </div>
+                            <div class="advisory-body" id="advisory-container">
+                                <div class="loading-spinner"></div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </section>
+                
+                <!-- TAB 2: AI CFO CHAT -->
+                <section id="tab-chat" class="tab-panel">
+                    <div class="chat-layout card-glass">
+                        <div class="chat-header">
+                            <div class="bot-avatar"><i class="fa-solid fa-robot"></i></div>
+                            <div>
+                                <h3>AFIS AI CFO Specialist</h3>
+                                <p class="text-secondary text-small"><span class="dot dot-online"></span> Virtual Analyst • Ready to audit ledger</p>
+                            </div>
+                        </div>
+                        
+                        <!-- CHAT SCROLL AREA -->
+                        <div class="chat-history" id="chat-history-box">
+                            <!-- Greetings -->
+                            <div class="chat-message incoming">
+                                <div class="msg-bubble">
+                                    Hello! I am your virtual CFO AI. I have parsed the latest accounting ledger from SQLite and verified compliance parameters. Ask me anything about your current cash position, expense optimizations, or machine learning projections!
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- QUICK PROMPT SUGGESTIONS -->
+                        <div class="quick-prompts">
+                            <button class="btn-prompt" onclick="sendQuickPrompt('How is my cash health and runway?')">Check Runway</button>
+                            <button class="btn-prompt" onclick="sendQuickPrompt('Give me some recommendations to reduce expenses')">Reduce Expenses</button>
+                            <button class="btn-prompt" onclick="sendQuickPrompt('What is the ML forecast for next month?')">Show ML Forecasts</button>
+                        </div>
+                        
+                        <!-- INPUT BOX -->
+                        <div class="chat-input-area">
+                            <input type="text" id="chat-input" placeholder="Type a message or click a suggestion..." onkeydown="if(event.key === 'Enter') sendMessage()">
+                            <button class="btn btn-primary" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i> Send</button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- TAB 3: COMPLIANCE & ETL -->
+                <section id="tab-compliance" class="tab-panel">
+                    <div class="compliance-layout">
+                        
+                        <!-- UPLOAD CARD -->
+                        <div class="card-glass">
+                            <div class="card-header">
+                                <h3>Ingest Ledger (ETL Ingestor)</h3>
+                            </div>
+                            <div class="upload-area" id="drop-zone">
+                                <i class="fa-solid fa-file-csv upload-icon"></i>
+                                <p>Drag and drop your transaction CSV here, or click to browse</p>
+                                <input type="file" id="file-input" accept=".csv" style="display:none">
+                                <button class="btn btn-primary" onclick="document.getElementById('file-input').click()"><i class="fa-solid fa-upload"></i> Upload CSV</button>
+                            </div>
+                            <div id="upload-status" class="upload-status"></div>
+                            
+                            <!-- Template guide -->
+                            <div class="template-guide text-small text-secondary">
+                                <p><strong>CSV Header format:</strong> Date (YYYY-MM-DD), Type (income/expense), Amount, Category, Description</p>
+                                <a href="data:text/csv;charset=utf-8,Date,Type,Amount,Category,Description%0A2026-06-01,expense,150.50,Software,Monthly Cloud Subscription%0A2026-06-03,income,4500.00,Revenue,Client J Project Implementation" download="afis_sample_ledger.csv" class="link-download"><i class="fa-solid fa-download"></i> Download Sample CSV Template</a>
+                            </div>
+                        </div>
+                        
+                        <!-- NIST CHECKLIST -->
+                        <div class="card-glass">
+                            <div class="card-header">
+                                <h3>NIST AI RMF 1.0 Safety Check</h3>
+                                <span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> Standard Met</span>
+                            </div>
+                            <div class="nist-checklist" id="nist-grid">
+                                <!-- NIST check cards loaded dynamically -->
+                            </div>
+                        </div>
+                        
+                        <!-- SYSTEM LOGS -->
+                        <div class="card-glass">
+                            <div class="card-header">
+                                <h3>NIST Governance Audit Trail</h3>
+                            </div>
+                            <div class="logs-console" id="logs-console-box">
+                                <div class="log-line text-secondary">Loading audit logs...</div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </section>
+                
+            </div>
+        </main>
+    </div>
+    
+    <!-- Script -->
+    <script src="app.js"></script>
+</body>
+</html>
