@@ -129,6 +129,15 @@ AFIS is developed under the guidelines of the **NIST AI Risk Management Framewor
 
 ---
 
+## Running Tests
+
+```bash
+pip install -r requirements.txt
+pytest tests/ -v
+```
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
