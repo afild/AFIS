@@ -5,7 +5,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-green.svg)](https://fastapi.tiangolo.com/)
 [![NIST AI RMF](https://img.shields.io/badge/NIST%20AI%20RMF-1.0-blue.svg)](https://airc.nist.gov/RMF)
 
-AFIS (Advanced Financial Intelligence System) is a state-of-the-art, open-source financial technology framework designed to empower Small and Medium Enterprises (SMEs) across the United States. AFIS helps companies mitigate cash flow risks, automate financial controllership, and enhance survival rates through an integrated pipeline of automated ETL ingestion, Machine Learning forecasting, and cognitive AI-powered financial auditing.
+AFIS (AI-Powered Financial Intelligence System) is a state-of-the-art, open-source financial technology framework designed to empower Small and Medium Enterprises (SMEs) across the United States. AFIS helps companies mitigate cash flow risks, automate financial controllership, and enhance survival rates through an integrated pipeline of automated ETL ingestion, Machine Learning forecasting, and cognitive AI-powered financial auditing.
 
 ---
 
