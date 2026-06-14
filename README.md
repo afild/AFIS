@@ -66,6 +66,24 @@ To try it immediately with sample data, the system will auto-load
 
 ---
 
+## AI Analysis Modes
+
+AFIS supports two analysis modes:
+
+**LLM Mode** (requires API key): The AI Financial Analyst uses Claude to generate
+natural-language interpretations of your financial position.
+
+```bash
+export ANTHROPIC_API_KEY=your_key_here
+python run.py
+```
+
+**Offline Mode** (default, no API key needed): The system uses rule-based
+financial heuristics to generate structured analysis. All ETL, forecasting,
+and dashboard features work identically in both modes.
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites

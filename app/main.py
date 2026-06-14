@@ -9,7 +9,7 @@ from app.etl.ingestor import ETLIngestor
 from app.forecasting.model import CashFlowForecaster
 from app.ai_agent.analyst import AIFinancialAnalyst
 
-app = FastAPI(title="AFIS Core Framework API", version="1.0.0")
+app = FastAPI(title="AFIS Core Framework API", version="0.2.0")
 
 # Enable CORS for local testing
 app.add_middleware(
@@ -107,6 +107,16 @@ def get_nist_compliance():
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/system/status")
+def system_status():
+    """Returns the current system status, AI mode, and version."""
+    from app.llm_client import get_mode
+    return {
+        "status": "running",
+        "ai_mode": get_mode(),
+        "version": "0.2.0"
+    }
 
 # Mount Frontend static files
 frontend_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")

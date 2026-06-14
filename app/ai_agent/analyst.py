@@ -1,5 +1,6 @@
 import json
 from app.database.db_manager import get_db_connection, log_compliance
+from app.llm_client import generate_financial_narrative
 
 class AIFinancialAnalyst:
     """
@@ -101,11 +102,15 @@ class AIFinancialAnalyst:
         elif kpis["net_margin_percent"] >= 30:
             recommendations.append("HIGH MARGIN: Outstanding profit margin! Excellent operational leverage.")
 
+        # Generate AI narrative from computed metrics
+        narrative = generate_financial_narrative(kpis)
+        
         # Structure report
         report = {
             "kpis": kpis,
             "warnings": warnings if warnings else ["None. Cash flow and margins are stable."],
             "recommendations": recommendations,
+            "narrative": narrative,
             "analyst_signature": "AFIS Cognitive Analyst AI (NIST Compliance ID: AFIS-AGENT-10)"
         }
         
