@@ -138,6 +138,23 @@ pytest tests/ -v
 
 ---
 
+## Changelog
+
+### v0.2.0 (2025-06)
+- Added Anthropic Claude integration for AI-powered financial narrative (offline fallback included)
+- Added 24-month synthetic SME dataset (`data/examples/`) for immediate demo
+- Added pytest test suite covering ETL, forecasting, and API endpoints
+- Added `CONTRIBUTING.md` and `docs/architecture.md`
+- Added `.env.example` for developer onboarding
+- Fixed installation URL in README
+- Added `/api/system/status` endpoint reporting AI mode
+
+### v0.1.0 (2025-06)
+- Initial release: ETL pipeline, Ridge regression forecasting, AI Financial Analyst,
+  NIST AI RMF compliance logging, glassmorphic web dashboard
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
