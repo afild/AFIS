@@ -1,7 +1,9 @@
 # AFIS: AI-Powered Financial Intelligence System
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python Version](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-green.svg)](https://fastapi.tiangolo.com/)
+[![NIST AI RMF](https://img.shields.io/badge/NIST%20AI%20RMF-1.0-blue.svg)](https://airc.nist.gov/RMF)
 
 AFIS (Advanced Financial Intelligence System) is a state-of-the-art, open-source financial technology framework designed to empower Small and Medium Enterprises (SMEs) across the United States. AFIS helps companies mitigate cash flow risks, automate financial controllership, and enhance survival rates through an integrated pipeline of automated ETL ingestion, Machine Learning forecasting, and cognitive AI-powered financial auditing.
 
@@ -25,6 +27,19 @@ graph TD
 
 ---
 
+## Who Is This For?
+
+AFIS is built for owners and CFOs of U.S. small and medium enterprises (SMEs) who need
+actionable financial intelligence without the cost of enterprise software.
+
+**You do not need a data science background.** Clone the repo, install dependencies,
+drop in your CSV export from QuickBooks or Xero, and run `python run.py`.
+
+The system handles the rest: data validation, forecasting, and natural-language
+interpretation of your financial position.
+
+---
+
 ## 🌟 Key Features
 
 1. **Automated ETL Ingestion**: Ingests financial transactional data, formats dates and currencies, checks for anomalous entries (duplicates, outliers), and logs database status.
@@ -32,6 +47,22 @@ graph TD
 3. **Cognitive AI Financial Analyst**: An interactive AI Agent acting as a virtual CFO. It computes critical metrics (Burn Rate, Runway in months, Net Profit Margin), flags financial red flags, and provides actionable strategic advice.
 4. **NIST AI RMF 1.0 Compliance Framework**: Integrated logging and safety audits verifying data integrity, model fairness, transparency, and explanation validity, complying with federal guidelines.
 5. **Premium Web Dashboard**: A visual interface utilizing modern dark-mode glassmorphism, responsive CSS grid layouts, and interactive Chart.js visualizations.
+
+---
+
+## Quickstart
+
+```bash
+git clone https://github.com/Albertsfc/AFIS-Core-Framework.git
+cd AFIS-Core-Framework
+pip install -r requirements.txt
+python run.py
+```
+
+Then open `http://localhost:8000/static/index.html` in your browser.
+
+To try it immediately with sample data, the system will auto-load
+`data/examples/sample_sme_transactions.csv` if no database is found.
 
 ---
 
@@ -45,8 +76,8 @@ graph TD
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/afis-core.git
-   cd afis-core
+   git clone https://github.com/Albertsfc/AFIS-Core-Framework.git
+   cd AFIS-Core-Framework
    ```
 
 2. **Create a virtual environment**:
