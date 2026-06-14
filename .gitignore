@@ -1,8 +1,15 @@
+.env
+*.db
 __pycache__/
+*.pyc
 *.py[cod]
 *$py.class
+.pytest_cache/
+.venv/
 venv/
 env/
+*.egg-info/
+dist/
+build/
+.DS_Store
 *.sqlite3
-*.db
-.env

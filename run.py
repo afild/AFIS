@@ -1,6 +1,18 @@
 import sys
 import os
 import subprocess
+from pathlib import Path
+
+# Load .env if present (optional, no dependency on python-dotenv)
+env_file = Path(__file__).parent / ".env"
+if env_file.exists():
+    with open(env_file) as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                key, _, value = line.partition("=")
+                os.environ.setdefault(key.strip(), value.strip())
+
 
 def check_dependencies():
     """Simple check to alert users to run pip install if dependencies are missing."""
