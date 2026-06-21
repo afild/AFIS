@@ -1,52 +1,126 @@
-# AFIS: AI-Powered Financial Intelligence System
+# AFIS — AI-Powered Financial Intelligence System
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-green.svg)](https://fastapi.tiangolo.com/)
-[![NIST AI RMF](https://img.shields.io/badge/NIST%20AI%20RMF-1.0-blue.svg)](https://airc.nist.gov/RMF)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-Ridge%20Regression-orange.svg)](https://scikit-learn.org/)
+[![NIST AI RMF](https://img.shields.io/badge/NIST%20AI%20RMF-1.0%20Aligned-blue.svg)](https://airc.nist.gov/RMF)
 
-AFIS (AI-Powered Financial Intelligence System) is a state-of-the-art, open-source financial technology framework designed to empower Small and Medium Enterprises (SMEs) across the United States. AFIS helps companies mitigate cash flow risks, automate financial controllership, and enhance survival rates through an integrated pipeline of automated ETL ingestion, Machine Learning forecasting, and cognitive AI-powered financial auditing.
+> **a suite of open-source tools designed to empower Small and Medium Enterprises (SMEs) with AI-driven financial intelligence.**
+
+AFIS is an open-source financial intelligence framework that solves a specific problem: small businesses generate enough financial data — but almost none of them convert it into forward-looking decisions. AFIS bridges that gap. It ingests raw transactional records, applies machine learning to project cash flow, and surfaces plain-English interpretations through an interactive AI Financial Analyst — running entirely on the business owner's machine, with zero cloud dependency and no recurring subscription cost.
 
 ---
 
-## 🏗️ Technical Architecture
+## The Problem AFIS Solves
 
-AFIS combines data engineering, machine learning, and natural language processing to deliver interactive business intelligence:
+> *61% of small businesses have no real-time view of their cash position. 88% experienced an unexpected cash shock in the last year. Only 31% manage cash flow actively.*
+> — Federal Reserve Small Business Credit Survey (2024); QuickBooks State of Small Business Cash Flow (2025)
+
+The issue is not the absence of data. The issue is the absence of **conversion**: transforming raw exports from QuickBooks, Xero, or Wave into visibility, margin analysis, risk indicators, and 30/90/180-day projections — before the crisis, not after.
+
+AFIS addresses this conversion problem directly, for the segment that needs it most: the 33.2 million U.S. small businesses that collectively represent 99.9% of all American businesses and nearly half of private-sector employment.
+
+---
+
+## How It Works — Three Integrated Layers
+
+![AFIS Three-Layer Architecture](docs/images/three_layers.png)
+
+### Layer 1 — Data Organization (ETL Ingestion)
+Receives CSV exports from any accounting system. Validates schema, normalizes dates and currency formats, detects duplicates and statistical anomalies, logs every action to a NIST-aligned compliance audit trail, and writes clean records to a local SQLite database.
+
+```
+Input:  QuickBooks export / Xero CSV / custom ledger
+Output: Structured transactions table — validated, deduplicated, audit-logged
+```
+
+### Layer 2 — Predictive Analytics (ML Forecasting + BI Dashboards)
+Trains Ridge regression models on the structured transaction history to produce 12-month projections of revenue, expenses, and net cash flow — each accompanied by 95% confidence intervals. Exposes burnrate, runway, net margin, and cash position via interactive Chart.js dashboards.
+
+```
+Input:  Structured financial database
+Output: 12-month cash flow forecast · burn rate · runway · confidence bounds
+```
+
+### Layer 3 — AI Interpretation (Financial Analyst Agent)
+Converts processed metrics into natural-language management narratives, flags financial red flags (low runway, negative margin, unusual burn), and provides actionable recommendations. Operates in two modes:
+- **LLM Mode**: powered by Anthropic Claude for context-aware narrative generation
+- **Offline Mode**: deterministic rule-based heuristics — no API key required
+
+```
+Input:  Computed KPIs and forecast results
+Output: Plain-English narrative · risk flags · strategic recommendations
+```
+
+---
+
+## Technical Architecture
+
+![AFIS System Architecture](docs/images/architecture.png)
 
 ```mermaid
 graph TD
-    A[Raw Financial Data: CSV / Invoices] -->|ETL Ingestion & NIST Validation| B(AFIS Ingestor)
-    B -->|Structured Write| C[(SQLite Database)]
-    C -->|Fetch Historical Transactions| D(ML Forecasting Engine)
-    C -->|Fetch Context & Audit Logs| E(AI Financial Analyst Agent)
-    D -->|Predict Cash Flow Trends| F[FastAPI Backend Server]
-    E -->|Generate Insights & NIST Audit| F
-    F -->|REST APIs| G[Premium Glassmorphic Dashboard]
-    G -->|Interactive Chat & Charts| H[End User: Business Owner / CFO]
+    A["Raw Financial Data<br/>(CSV / QuickBooks / Xero)"] -->|POST /api/ingest| B["ETL Ingestor<br/>app/etl/ingestor.py"]
+    B -->|Validated records| C[("SQLite Database<br/>afis_finance.db")]
+    C -->|Historical transactions| D["ML Forecasting Engine<br/>app/forecasting/model.py<br/>Ridge Regression · scikit-learn"]
+    C -->|KPI context + audit logs| E["AI Financial Analyst<br/>app/ai_agent/analyst.py<br/>+ app/llm_client.py"]
+    D -->|12-month projections| F["FastAPI Backend<br/>app/main.py"]
+    E -->|Narratives + NIST audit| F
+    F -->|REST API| G["Glassmorphic Dashboard<br/>frontend/ · Chart.js"]
+    G -->|Interactive chat + live charts| H["Business Owner / CFO"]
 ```
+
+### REST API Surface
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/api/ingest` | `POST` | Upload CSV ledger — triggers ETL pipeline and model retraining |
+| `/api/kpis` | `GET` | Current KPIs: cash balance, burn rate, runway, net margin |
+| `/api/forecast` | `GET` | 12-month ML projections with confidence intervals |
+| `/api/chat` | `POST` | Interactive query to the AI Financial Analyst |
+| `/api/nist-compliance` | `GET` | NIST AI RMF 1.0 audit checklist and compliance logs |
+| `/api/system/status` | `GET` | System status, AI mode (`llm` or `offline`), version |
+
+### Stack
+
+| Component | Technology |
+|---|---|
+| Backend | FastAPI (Python 3.10+) |
+| ML Forecasting | scikit-learn · Ridge Regression · NumPy · pandas |
+| Database | SQLite (zero-server, local-first) |
+| AI Narrative | Anthropic Claude (optional) · rule-based offline fallback |
+| Dashboard | HTML + CSS + JavaScript · Chart.js |
+| Testing | pytest · httpx |
+| Data format | CSV — compatible with QuickBooks, Xero, Wave exports |
+
+---
+
+## Key Design Decisions
+
+**Local-first, privacy by design.** All transaction data stays on the SME's machine. The optional LLM integration transmits only computed financial metrics to the API — never raw transaction records.
+
+**Zero-server dependency.** SQLite requires no database server. The entire stack starts with a single command.
+
+**Works without an API key.** Every feature — ETL, forecasting, dashboards — operates in full in offline mode. The AI narrative layer degrades gracefully to deterministic heuristics.
+
+**Provider-agnostic LLM layer.** `app/llm_client.py` abstracts the AI provider. Anthropic Claude is the reference implementation; any provider can be substituted.
+
+**NIST AI RMF 1.0 alignment.** Not a certification claim — a design principle. Every ETL action, model run, and AI interaction is logged to a persistent `compliance_logs` table following NIST governance principles: validity, reliability, explainability, and human oversight.
 
 ---
 
 ## Who Is This For?
 
-AFIS is built for owners and CFOs of U.S. small and medium enterprises (SMEs) who need
-actionable financial intelligence without the cost of enterprise software.
+AFIS is built for owners and CFOs of U.S. small and medium enterprises who need financial intelligence without enterprise software costs — and for the accountants, bookkeepers, and BI consultants who serve them.
 
-**You do not need a data science background.** Clone the repo, install dependencies,
-drop in your CSV export from QuickBooks or Xero, and run `python run.py`.
+**You do not need a data science background.** Export your ledger from QuickBooks or Xero, drop in the CSV, and run `python run.py`. AFIS handles schema validation, model training, and interpretation.
 
-The system handles the rest: data validation, forecasting, and natural-language
-interpretation of your financial position.
-
----
-
-## 🌟 Key Features
-
-1. **Automated ETL Ingestion**: Ingests financial transactional data, formats dates and currencies, checks for anomalous entries (duplicates, outliers), and logs database status.
-2. **Machine Learning Cash Flow Forecasting**: Trains a regression-based predictive model using scikit-learn on historical transaction sequences to project the next 12 months of revenues, expenses, and net cash flow with confidence boundaries.
-3. **Cognitive AI Financial Analyst**: An interactive AI Agent acting as a virtual CFO. It computes critical metrics (Burn Rate, Runway in months, Net Profit Margin), flags financial red flags, and provides actionable strategic advice.
-4. **NIST AI RMF 1.0 Compliance Framework**: Integrated logging and safety audits verifying data integrity, model fairness, transparency, and explanation validity, complying with federal guidelines.
-5. **Premium Web Dashboard**: A visual interface utilizing modern dark-mode glassmorphism, responsive CSS grid layouts, and interactive Chart.js visualizations.
+**Target use cases:**
+- **Accounting & advisory firms** — elevate client data from bookkeeping to CFO-level advisory dashboards
+- **Property management** — multi-property revenue/expense tracking, seasonal forecasting, owner reporting
+- **Facility & contract services** — margin-by-contract analysis, cost-center tracking, receivables monitoring
+- **Any SME with a CSV export** — immediate cash flow visibility and forward projections
 
 ---
 
@@ -59,32 +133,38 @@ pip install -r requirements.txt
 python run.py
 ```
 
-Then open `http://localhost:8000/static/index.html` in your browser.
+Open `http://localhost:8000/static/index.html` in your browser.
 
-To try it immediately with sample data, the system will auto-load
-`data/examples/sample_sme_transactions.csv` if no database is found.
+**Try it with sample data:** the system auto-seeds a synthetic 24-month transaction dataset (`data/examples/sample_sme_transactions.csv`) representing a fictional U.S. manufacturer — 421 transactions, ~$1.9M annual revenue, 9% net margin. The ML model trains on it immediately.
 
 ---
 
 ## AI Analysis Modes
 
-AFIS supports two analysis modes:
-
-**LLM Mode** (requires API key): The AI Financial Analyst uses Claude to generate
-natural-language interpretations of your financial position.
+**LLM Mode** — set the environment variable and restart:
 
 ```bash
+# Linux/macOS
 export ANTHROPIC_API_KEY=your_key_here
+
+# Windows
+set ANTHROPIC_API_KEY=your_key_here
+
 python run.py
 ```
 
-**Offline Mode** (default, no API key needed): The system uses rule-based
-financial heuristics to generate structured analysis. All ETL, forecasting,
-and dashboard features work identically in both modes.
+**Offline Mode** (default, no key required): rule-based financial heuristics generate structured analysis covering runway assessment, margin evaluation, and burn rate monitoring. All ETL, forecasting, and dashboard functionality is identical in both modes.
+
+Check which mode is active:
+
+```bash
+curl http://localhost:8000/api/system/status
+# {"status": "running", "ai_mode": "offline", "version": "0.2.0"}
+```
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Python 3.10 or higher
@@ -92,49 +172,99 @@ and dashboard features work identically in both modes.
 
 ### Installation
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/Albertsfc/AFIS-Core-Framework.git
-   cd AFIS-Core-Framework/AFIS
-   ```
+```bash
+# 1. Clone
+git clone https://github.com/Albertsfc/AFIS-Core-Framework.git
+cd AFIS-Core-Framework/AFIS
 
-2. **Create a virtual environment**:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+# 2. Create virtual environment
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
 
-3. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+# 3. Install dependencies
+pip install -r requirements.txt
 
-### Running the Application
+# 4. (Optional) configure environment
+cp .env.example .env
+# Edit .env to add your ANTHROPIC_API_KEY if desired
 
-1. **Launch the FastAPI Server & Dashboard**:
-   ```bash
-   python run.py
-   ```
-2. **Access the Web Interface**:
-   Open your browser and navigate to `http://localhost:8000/static/index.html` to explore the dashboard.
+# 5. Launch
+python run.py
+```
 
----
-
-## 🔒 NIST AI RMF 1.0 Compliance
-
-AFIS is developed under the guidelines of the **NIST AI Risk Management Framework (NIST AI RMF 1.0)**, implementing:
-- **Validity & Reliability**: Rigorous ETL constraints to reject corrupt or poisoned financial records.
-- **Explainability & Transparency**: Open-source ML algorithms and traceable rule pathways for AI Agent decisions.
-- **Accountability & Auditability**: Persistent database logs of all ETL actions, model drift parameters, and AI interactions.
-
----
-
-## Running Tests
+### Running Tests
 
 ```bash
-pip install -r requirements.txt
 pytest tests/ -v
 ```
+
+---
+
+## NIST AI RMF 1.0 Alignment
+
+| NIST Function | AFIS Implementation |
+|---|---|
+| **GOVERN** | MIT License · open audit logs · `CONTRIBUTING.md` · traceable decision logic |
+| **MAP** | Financial domain scoped to SME use cases · documented assumptions and limitations |
+| **MEASURE** | Automated pytest suite · model residuals computed per run · anomaly detection in ETL |
+| **MANAGE** | Offline fallback · duplicate/outlier flagging · `compliance_logs` table · explainable Ridge model |
+
+The AI Financial Analyst sends only computed aggregate metrics to the LLM API — never raw transaction data. This is enforced at the `app/llm_client.py` layer.
+
+---
+
+## Repository Structure
+
+```
+AFIS/
+├── app/
+│   ├── main.py                  ← FastAPI app · route registration · static serving
+│   ├── llm_client.py            ← Provider-agnostic LLM client (Claude + offline fallback)
+│   ├── ai_agent/
+│   │   └── analyst.py           ← KPI computation · health report · chat Q&A
+│   ├── database/
+│   │   ├── db_manager.py        ← SQLite connection · schema init · compliance logging
+│   │   └── schema.sql           ← Tables: transactions · forecasts · compliance_logs
+│   ├── etl/
+│   │   └── ingestor.py          ← CSV parsing · validation · duplicate detection · anomaly flagging
+│   └── forecasting/
+│       └── model.py             ← Ridge regression · 12-month projection · confidence intervals
+├── data/
+│   └── examples/
+│       ├── sample_sme_transactions.csv   ← 421-row synthetic dataset (24 months)
+│       └── README.md                     ← Column schema and usage instructions
+├── docs/
+│   ├── architecture.md          ← Detailed architecture and module responsibilities
+│   └── images/                  ← Architecture diagrams
+├── frontend/
+│   ├── index.html               ← Dark-mode glassmorphic dashboard
+│   ├── styles.css               ← CSS grid layout
+│   └── app.js                   ← Chart.js charts · API calls · chat interface
+├── tests/
+│   ├── conftest.py              ← Shared pytest fixtures
+│   ├── test_etl.py              ← ETL pipeline tests
+│   ├── test_forecast.py         ← ML forecasting tests
+│   ├── test_api.py              ← FastAPI endpoint tests
+│   └── test_core.py             ← Integration tests
+├── .env.example                 ← Environment variable template
+├── CHANGELOG.md                 ← Full release history
+├── CONTRIBUTING.md              ← Contribution guide
+├── LICENSE                      ← MIT License
+├── requirements.txt
+└── run.py                       ← Single-command launcher with .env auto-load
+```
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on reporting issues, submitting code, and contributing datasets.
+
+Areas where help is most needed:
+- ETL connectors for additional accounting formats (Xero XML, Wave CSV, FreshBooks)
+- Additional ML models for highly seasonal businesses (Prophet, LSTM)
+- Docker Compose setup for zero-dependency deployment
+- Localization for Spanish-speaking SME owners
 
 ---
 
@@ -142,34 +272,12 @@ pytest tests/ -v
 
 See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
-### Latest: v0.2.1 — 2026-04-28
+### Latest: v0.2.1
+
 - Finalized README, updated badges, and revised architecture documentation
-
-### v0.2.0 — 2026-03-11
-- Added `.env.example` and improved local developer onboarding (DX)
-
-### v0.1.4 — 2026-01-20
-- Added `CONTRIBUTING.md` and `docs/architecture.md`
-
-### v0.1.3 — 2025-11-03
-- Added full `pytest` suite covering ETL pipeline, ML forecasting, and API endpoints
-
-### v0.1.2 — 2025-08-17
-- Added LLM integration module with automatic offline fallback
-- Added `/api/system/status` endpoint
-
-### v0.1.1 — 2025-01-09
-- Added synthetic 24-month SME transaction dataset for demo and testing
-
-### v0.0.2 — 2024-10-22
-- Fixed installation URL and added repository description
-
-### v0.0.1 — 2023-02-14
-- Initial release: ETL pipeline, Ridge regression forecasting, Financial Analyst reporting module,
-  NIST AI RMF 1.0 compliance logging, glassmorphic web dashboard
 
 ---
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License — see [LICENSE](LICENSE) for details. Free to use, adapt, and redistribute.
