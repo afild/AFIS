@@ -19,7 +19,7 @@ AFIS is an open-source financial intelligence framework that solves a specific p
 
 The issue is not the absence of data. The issue is the absence of **conversion**: transforming raw exports from QuickBooks, Xero, or Wave into visibility, margin analysis, risk indicators, and 30/90/180-day projections — before the crisis, not after.
 
-AFIS addresses this conversion problem directly, for the segment that needs it most: the 33.2 million U.S. small businesses that collectively represent 99.9% of all American businesses and nearly half of private-sector employment.
+AFIS addresses this conversion problem directly, for the segment that needs it most: the 33.2 million small businesses that collectively represent 99.9% of all American businesses and nearly half of private-sector employment.
 
 ---
 
@@ -112,7 +112,7 @@ graph TD
 
 ## Who Is This For?
 
-AFIS is built for owners and CFOs of U.S. small and medium enterprises who need financial intelligence without enterprise software costs — and for the accountants, bookkeepers, and BI consultants who serve them.
+AFIS is built for owners and CFOs of small and medium enterprises who need financial intelligence without enterprise software costs — and for the accountants, bookkeepers, and BI consultants who serve them.
 
 **You do not need a data science background.** Export your ledger from QuickBooks or Xero, drop in the CSV, and run `python run.py`. AFIS handles schema validation, model training, and interpretation.
 
