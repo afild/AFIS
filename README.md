@@ -17,7 +17,7 @@ AFIS is an open-source financial intelligence framework. It ingests raw transact
 ![AFIS Three-Layer Architecture](AFIS/docs/images/three_layers.png)
 
 ### Layer 1 — Data Organization (ETL Ingestion)
-Receives CSV exports from any accounting system. Validates schema, normalizes dates and currency formats, detects duplicates and statistical anomalies, logs every action to a NIST-aligned compliance audit trail, and writes clean records to a local SQLite database.
+Receives CSV exports from any accounting system. Validates schema, normalizes dates and currency formats, detects duplicates and statistical anomalies, logs every action to a NIST-aligned governance audit trail, and writes clean records to a local SQLite database.
 
 ```
 Input:  QuickBooks export / Xero CSV / custom ledger
@@ -68,7 +68,7 @@ graph TD
 | `/api/kpis` | `GET` | Current KPIs: cash balance, burn rate, runway, net margin |
 | `/api/forecast` | `GET` | 12-month ML projections with confidence intervals |
 | `/api/chat` | `POST` | Interactive query to the AI Financial Analyst |
-| `/api/nist-compliance` | `GET` | NIST AI RMF 1.0 audit checklist and compliance logs |
+| `/api/nist-audit` | `GET` | NIST AI RMF 1.0 audit checklist and governance logs |
 | `/api/system/status` | `GET` | System status, AI mode (`llm` or `offline`), version |
 
 ### Stack
@@ -95,7 +95,7 @@ graph TD
 
 **Provider-agnostic LLM layer.** `app/llm_client.py` abstracts the AI provider. Anthropic Claude is the reference implementation; any provider can be substituted.
 
-**NIST AI RMF 1.0 alignment.** Every ETL action, model run, and AI interaction is logged to a persistent `compliance_logs` table following NIST governance principles: validity, reliability, explainability, and human oversight.
+**NIST AI RMF 1.0 alignment.** Every ETL action, model run, and AI interaction is logged to a persistent `audit_logs` table following NIST governance principles: validity, reliability, explainability, and human oversight.
 
 ---
 
@@ -190,7 +190,7 @@ pytest tests/ -v
 | **GOVERN** | MIT License · open audit logs · `CONTRIBUTING.md` · traceable decision logic |
 | **MAP** | Financial domain scoped to SME use cases · documented assumptions and limitations |
 | **MEASURE** | Automated pytest suite · model residuals computed per run · anomaly detection in ETL |
-| **MANAGE** | Offline fallback · duplicate/outlier flagging · `compliance_logs` table · explainable Ridge model |
+| **MANAGE** | Offline fallback · duplicate/outlier flagging · `audit_logs` table · explainable Ridge model |
 
 The AI Financial Analyst sends only computed aggregate metrics to the LLM API — never raw transaction data. This is enforced at the `app/llm_client.py` layer.
 
@@ -207,7 +207,7 @@ AFIS-Framework/
     │   ├── ai_agent/
     │   │   └── analyst.py           ← KPI computation · health report · chat Q&A
     │   ├── database/
-    │   │   └── db_manager.py        ← SQLite connection · schema init · compliance logging
+    │   │   └── db_manager.py        ← SQLite connection · schema init · governance audit logging
     │   ├── etl/
     │   │   └── ingestor.py          ← CSV parsing · validation · duplicate detection · anomaly flagging
     │   └── forecasting/
