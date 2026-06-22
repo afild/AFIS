@@ -49,15 +49,32 @@ Output: Plain-English narrative · risk flags · strategic recommendations
 ![AFIS System Architecture](AFIS/docs/images/architecture.png)
 
 ```mermaid
-graph TD
-    A["Raw Financial Data<br/>(CSV / QuickBooks / Xero)"] -->|POST /api/ingest| B["ETL Ingestor<br/>app/etl/ingestor.py"]
-    B -->|Validated records| C[("SQLite Database<br/>afis_finance.db")]
-    C -->|Historical transactions| D["ML Forecasting Engine<br/>app/forecasting/model.py<br/>Ridge Regression · scikit-learn"]
-    C -->|KPI context + audit logs| E["AI Financial Analyst<br/>app/ai_agent/analyst.py<br/>+ app/llm_client.py"]
-    D -->|12-month projections| F["FastAPI Backend<br/>app/main.py"]
-    E -->|Narratives + NIST audit| F
-    F -->|REST API| G["Glassmorphic Dashboard<br/>frontend/ · Chart.js"]
-    G -->|Interactive chat + live charts| H["Business Owner / CFO"]
+sequenceDiagram
+    autonumber
+    actor Owner as Business Owner
+    participant FE as Frontend Dashboard (HTML/JS)
+    participant BE as FastAPI Backend (main.py)
+    participant ETL as ETL Ingestor (ingestor.py)
+    participant DB as SQLite DB (afis_finance.db)
+    participant ML as ML Forecaster (model.py)
+
+    Owner->>FE: Upload CSV Ledger
+    FE->>BE: POST /api/ingest (file)
+    BE->>ETL: Run Ingestion pipeline
+    ETL->>DB: Check duplicates / log audits
+    ETL->>DB: Insert validated transactions
+    BE->>ML: Retrain & Forecast
+    ML->>DB: Query historical data
+    ML->>ML: Train Ridge Regression model
+    ML->>DB: Clear & write new predictions
+    ML->>DB: Log ML model execution audit
+    BE-->>FE: Return Ingestion Summary
+    Note over FE,BE: Dynamic UI updates
+    FE->>BE: GET /api/kpis, /api/forecast, /api/nist-audit
+    BE->>DB: Fetch metrics & audit trail
+    DB-->>BE: Return data
+    BE-->>FE: Return JSON payloads
+    FE-->>Owner: Render updated charts & AI narratives
 ```
 
 ### REST API Surface
