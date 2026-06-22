@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS forecasts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Compliance & Audit Logs (aligned with NIST AI RMF 1.0)
-CREATE TABLE IF NOT EXISTS compliance_logs (
+-- 3. Governance Audit Logs (aligned with NIST AI RMF 1.0)
+CREATE TABLE IF NOT EXISTS audit_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     level TEXT NOT NULL CHECK(level IN ('INFO', 'WARNING', 'ERROR')),

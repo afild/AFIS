@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
 from sklearn.linear_model import Ridge
-from app.database.db_manager import get_db_connection, log_compliance
+from app.database.db_manager import get_db_connection, log_audit
 
 class CashFlowForecaster:
     """
@@ -31,12 +31,12 @@ class CashFlowForecaster:
     def train_and_forecast(cls) -> list:
         """
         Trains Ridge regression models on historical data and predicts the next 12 months.
-        Saves predictions to SQLite table 'forecasts' and logs the process for compliance auditing.
+        Saves predictions to SQLite table 'forecasts' and logs the process for governance auditing.
         """
         df = cls.fetch_monthly_aggregates()
         
         if df.empty:
-            log_compliance("ERROR", "ML_MODEL", "Forecasting failed: No transaction history available.")
+            log_audit("ERROR", "ML_MODEL", "Forecasting failed: No transaction history available.")
             return []
             
         # Pivot table to have columns: month, income, expense
@@ -54,7 +54,7 @@ class CashFlowForecaster:
         
         # If history is too short, fall back to moving average with warning (NIST AI RMF Reliability)
         if n_months < 4:
-            log_compliance(
+            log_audit(
                 "WARNING", 
                 "ML_MODEL", 
                 f"Historical dataset is too small ({n_months} months) for regression. Falling back to Moving Average model.",
@@ -151,7 +151,7 @@ class CashFlowForecaster:
         conn.commit()
         conn.close()
         
-        log_compliance(
+        log_audit(
             "INFO", 
             "ML_MODEL", 
             "Time-series ML forecasting models trained and executed.",

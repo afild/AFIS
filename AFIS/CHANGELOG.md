@@ -96,7 +96,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Automated ETL ingestion pipeline** (`app/etl/ingestor.py`): currency and date formatting, duplicate removal, outlier detection, and NIST-aligned validation rules
 - **Machine Learning Cash Flow Forecasting engine** (`app/forecasting/model.py`): Ridge regression model trained on historical transaction sequences, projecting 12-month revenue, expense, and net cash flow trends with confidence intervals
 - **Financial Analyst reporting module** (`app/ai_agent/analyst.py`): rule-based agent computing Burn Rate, Runway, Net Profit Margin, and flagging financial red flags with strategic recommendations
-- **NIST AI RMF 1.0 compliance logging**: persistent audit trail for all ETL actions, model parameters, and analyst outputs
+- **NIST AI RMF 1.0 audit logging**: persistent audit trail for all ETL actions, model parameters, and analyst outputs
 - **Premium glassmorphic web dashboard** (`frontend/`): dark-mode UI with Chart.js interactive visualizations, responsive CSS Grid layout, and real-time API integration
 - `run.py`: single-command server launcher
 - `requirements.txt`, `LICENSE` (MIT), and initial `README.md`

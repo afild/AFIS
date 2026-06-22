@@ -75,7 +75,7 @@ any LLM provider. The Anthropic integration is the reference implementation.
 | `app/forecasting/model.py` | Ridge regression model, 12-month projection |
 | `app/llm_client.py` | LLM integration with offline fallback |
 | `app/ai_agent/analyst.py` | Financial metrics computation, narrative generation |
-| `app/database/db_manager.py` | SQLite connection, schema init, compliance logging |
+| `app/database/db_manager.py` | SQLite connection, schema init, audit logging |
 | `frontend/` | Dashboard HTML/CSS/JS, Chart.js charts |
 | `data/examples/` | Synthetic SME dataset for demo and testing |
 | `tests/` | pytest suite |

@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from app.database.db_manager import init_db, get_db_connection, log_compliance
+from app.database.db_manager import init_db, get_db_connection, log_audit
 from app.etl.ingestor import ETLIngestor
 from app.forecasting.model import CashFlowForecaster
 from app.ai_agent.analyst import AIFinancialAnalyst
@@ -67,7 +67,7 @@ async def ingest_csv(file: UploadFile = File(...)):
             "summary": summary
         }
     except Exception as e:
-        log_compliance("ERROR", "ETL", f"Ingestion endpoint failed: {str(e)}")
+        log_audit("ERROR", "ETL", f"Ingestion endpoint failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/forecast")
@@ -88,8 +88,8 @@ def chat_with_analyst(payload: ChatRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/nist-compliance")
-def get_nist_compliance():
+@app.get("/api/nist-audit")
+def get_nist_audit():
     """Retrieve the NIST AI RMF 1.0 audit parameters and metrics."""
     try:
         checklist = AIFinancialAnalyst.get_nist_rmf_checklist()
@@ -97,7 +97,7 @@ def get_nist_compliance():
         # Fetch latest logs
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM compliance_logs ORDER BY timestamp DESC LIMIT 10")
+        cursor.execute("SELECT * FROM audit_logs ORDER BY timestamp DESC LIMIT 10")
         logs = cursor.fetchall()
         conn.close()
         

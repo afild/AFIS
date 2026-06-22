@@ -1,5 +1,5 @@
 import json
-from app.database.db_manager import get_db_connection, log_compliance
+from app.database.db_manager import get_db_connection, log_audit
 from app.llm_client import generate_financial_narrative
 
 class AIFinancialAnalyst:
@@ -111,7 +111,7 @@ class AIFinancialAnalyst:
             "warnings": warnings if warnings else ["None. Cash flow and margins are stable."],
             "recommendations": recommendations,
             "narrative": narrative,
-            "analyst_signature": "AFIS Cognitive Analyst AI (NIST Compliance ID: AFIS-AGENT-10)"
+            "analyst_signature": "AFIS Cognitive Analyst AI (NIST Safety ID: AFIS-AGENT-10)"
         }
         
         return report
@@ -176,7 +176,7 @@ class AIFinancialAnalyst:
 
     @classmethod
     def get_nist_rmf_checklist(cls) -> list:
-        """Returns the audit log compliance parameters aligned with NIST AI RMF 1.0."""
+        """Returns the audit log parameters aligned with NIST AI RMF 1.0."""
         conn = get_db_connection()
         cursor = conn.cursor()
         
@@ -184,10 +184,10 @@ class AIFinancialAnalyst:
         cursor.execute("SELECT COUNT(*) FROM transactions")
         tx_count = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM compliance_logs WHERE level = 'WARNING'")
+        cursor.execute("SELECT COUNT(*) FROM audit_logs WHERE level = 'WARNING'")
         warning_count = cursor.fetchone()[0]
         
-        cursor.execute("SELECT COUNT(*) FROM compliance_logs WHERE level = 'ERROR'")
+        cursor.execute("SELECT COUNT(*) FROM audit_logs WHERE level = 'ERROR'")
         error_count = cursor.fetchone()[0]
         
         conn.close()

@@ -7,9 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. Initialize Tabs
     initTabs();
     
-    // 2. Fetch Dashboard and Compliance Data
+    // 2. Fetch Dashboard and Audit Data
     fetchDashboardData();
-    fetchComplianceData();
+    fetchAuditData();
     
     // 3. Setup Drag and Drop Ingestion
     initFileIngestion();
@@ -25,7 +25,7 @@ function initTabs() {
     const meta = {
         "dashboard": { title: "Executive Dashboard", subtitle: "Overview of historical accounts and ML cash projections." },
         "chat": { title: "AI CFO Analyst Agent", subtitle: "Interact with our cognitive financial assistant to audit ledger." },
-        "compliance": { title: "NIST Compliance & Ingestion", subtitle: "Audit logs console and raw data ETL pipeline ingestion." }
+        "audit": { title: "NIST Audit & Ingestion", subtitle: "Audit logs console and raw data ETL pipeline ingestion." }
     };
     
     tabs.forEach(tab => {
@@ -361,10 +361,10 @@ function appendChatMessage(content, senderClass, isHtml = false) {
     return messageDiv;
 }
 
-// --- FETCH COMPLIANCE & LOGS DATA ---
-async function fetchComplianceData() {
+// --- FETCH AUDIT & LOGS DATA ---
+async function fetchAuditData() {
     try {
-        const res = await fetch(`${API_BASE}/nist-compliance`);
+        const res = await fetch(`${API_BASE}/nist-audit`);
         const data = await res.json();
         
         // Render NIST Cards
@@ -409,7 +409,7 @@ async function fetchComplianceData() {
         });
         
     } catch (err) {
-        console.error("Failed to load compliance audit logs:", err);
+        console.error("Failed to load audit logs:", err);
     }
 }
 
@@ -475,7 +475,7 @@ function initFileIngestion() {
                 
                 // Refresh dashboard to show loaded values
                 fetchDashboardData();
-                fetchComplianceData();
+                fetchAuditData();
             } else {
                 throw new Error(data.message || "Failed ingestion");
             }

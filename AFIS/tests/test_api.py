@@ -29,7 +29,8 @@ try:
         else:
             pytest.skip("Endpoint not yet implemented — will pass after Commit 3")
 
-except ImportError as e:
+except ImportError as err:
     import pytest
+    import_error_msg = str(err)
     def test_import_error():
-        pytest.skip(f"Cannot import app: {e}")
+        pytest.skip(f"Cannot import app: {import_error_msg}")

@@ -31,8 +31,8 @@ class TestAFISCore(unittest.TestCase):
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='forecasts'")
         self.assertIsNotNone(cursor.fetchone())
         
-        # Test compliance_logs table exists
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='compliance_logs'")
+        # Test audit_logs table exists
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='audit_logs'")
         self.assertIsNotNone(cursor.fetchone())
         
         conn.close()
@@ -46,6 +46,13 @@ class TestAFISCore(unittest.TestCase):
 
     def test_etl_csv_ingestion(self):
         """Tests ingestion of valid financial rows, duplicate detection, and anomaly logging."""
+        # Clean up any potential leftover test data to make test repeatable
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM transactions WHERE date IN ('2026-06-01', '2026-06-02', '2026-06-03')")
+        conn.commit()
+        conn.close()
+
         csv_data = (
             "Date,Type,Amount,Category,Description\n"
             "2026-06-01,income,4500.00,Revenue,Project milestone A\n"

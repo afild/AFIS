@@ -338,7 +338,7 @@ date,transaction_id,amount,type,category,description
 2024-08-15,TXN-202408-017,2287.85,expense,marketing,Email marketing platform subscription
 2024-08-16,TXN-202408-010,23412.22,expense,cogs,Welding rods and consumables
 2024-08-19,TXN-202408-020,2749.28,expense,professional_services,Legal review - vendor contract renewal
-2024-08-19,TXN-202408-021,1523.02,expense,professional_services,HR compliance consulting
+2024-08-19,TXN-202408-021,1523.02,expense,professional_services,HR regulatory alignment consulting
 2024-08-24,TXN-202408-006,7877.66,revenue,product_sales,Industrial component sales - Batch 2024-08-F
 2024-08-25,TXN-202408-002,33372.1,revenue,product_sales,Custom machined parts order
 2024-08-26,TXN-202408-004,25789.82,revenue,product_sales,Industrial component sales - Batch 2024-08-D

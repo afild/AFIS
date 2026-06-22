@@ -2,12 +2,12 @@ import csv
 import io
 import re
 from datetime import datetime
-from app.database.db_manager import get_db_connection, log_compliance
+from app.database.db_manager import get_db_connection, log_audit
 
 class ETLIngestor:
     """
     Automated Financial ETL Ingestor with built-in validation, 
-    duplicate detection, anomaly checking, and NIST compliance logging.
+    duplicate detection, anomaly checking, and NIST governance audit logging.
     """
     
     @staticmethod
@@ -41,7 +41,7 @@ class ETLIngestor:
         duplicates_found = 0
         anomalies_detected = 0
         
-        log_compliance("INFO", "ETL", "Started financial CSV ingestion pipeline.", conn=conn)
+        log_audit("INFO", "ETL", "Started financial CSV ingestion pipeline.", conn=conn)
         
         # Parse CSV
         f = io.StringIO(csv_content.strip())
@@ -69,12 +69,12 @@ class ETLIngestor:
             
             # 1. Basic format validations
             if not cls.validate_date(date):
-                log_compliance("WARNING", "ETL", f"Line {row_num} rejected: Invalid date format '{date}'. Expected YYYY-MM-DD.", conn=conn)
+                log_audit("WARNING", "ETL", f"Line {row_num} rejected: Invalid date format '{date}'. Expected YYYY-MM-DD.", conn=conn)
                 records_rejected += 1
                 continue
                 
             if tx_type not in ["income", "expense"]:
-                log_compliance("WARNING", "ETL", f"Line {row_num} rejected: Invalid transaction type '{tx_type}'. Expected 'income' or 'expense'.", conn=conn)
+                log_audit("WARNING", "ETL", f"Line {row_num} rejected: Invalid transaction type '{tx_type}'. Expected 'income' or 'expense'.", conn=conn)
                 records_rejected += 1
                 continue
                 
@@ -83,21 +83,21 @@ class ETLIngestor:
                 if amount < 0:
                     raise ValueError("Negative value")
             except ValueError:
-                log_compliance("WARNING", "ETL", f"Line {row_num} rejected: Invalid amount '{amount_str}'. Must be a non-negative number.", conn=conn)
+                log_audit("WARNING", "ETL", f"Line {row_num} rejected: Invalid amount '{amount_str}'. Must be a non-negative number.", conn=conn)
                 records_rejected += 1
                 continue
                 
             # 2. Duplicate Detection (preventing double booking)
             if cls.check_duplicate(cursor, date, tx_type, amount, category):
                 duplicates_found += 1
-                log_compliance("INFO", "ETL", f"Line {row_num} skipped: Duplicate transaction detected.", f"Date: {date}, Category: {category}, Amount: {amount}", conn=conn)
+                log_audit("INFO", "ETL", f"Line {row_num} skipped: Duplicate transaction detected.", f"Date: {date}, Category: {category}, Amount: {amount}", conn=conn)
                 continue
                 
             # 3. Anomaly / Outlier Checking (NIST AI RMF Reliability & Safety)
             # Flag transaction if it is 10x larger than typical transactions
             if amount > (avg_historical_amount * 10):
                 anomalies_detected += 1
-                log_compliance(
+                log_audit(
                     "WARNING", 
                     "ETL", 
                     f"Anomaly flagged at line {row_num}: Highly unusual transaction amount ${amount:.2f}.",
@@ -124,7 +124,7 @@ class ETLIngestor:
             "anomalies": anomalies_detected
         }
         
-        log_compliance(
+        log_audit(
             "INFO", 
             "ETL", 
             "CSV ingestion pipeline completed successfully.",

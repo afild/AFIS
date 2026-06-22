@@ -644,14 +644,14 @@ body {
     box-shadow: 0 0 0 2px var(--border-focus);
 }
 
-/* COMPLIANCE LAYOUT Grid */
-.compliance-layout {
+/* AUDIT LAYOUT Grid */
+.audit-layout {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
 }
 
-.compliance-layout > div:last-child {
+.audit-layout > div:last-child {
     grid-column: span 2;
 }
 

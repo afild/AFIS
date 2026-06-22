@@ -33,7 +33,7 @@ def init_db():
         
     conn.close()
 
-def log_compliance(level: str, module: str, message: str, details: str = None, conn=None):
+def log_audit(level: str, module: str, message: str, details: str = None, conn=None):
     """Inserts a log entry for NIST AI RMF 1.0 accountability audits."""
     should_close = False
     if conn is None:
@@ -41,7 +41,7 @@ def log_compliance(level: str, module: str, message: str, details: str = None, c
         should_close = True
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO compliance_logs (level, module, message, details) VALUES (?, ?, ?, ?)",
+        "INSERT INTO audit_logs (level, module, message, details) VALUES (?, ?, ?, ?)",
         (level, module, message, details)
     )
     conn.commit()
@@ -132,9 +132,9 @@ def seed_database(conn):
     
     conn.commit()
     
-    # Log the seeding event for NIST RMF compliance audit
+    # Log the seeding event for NIST RMF governance audit
     cursor.execute(
-        "INSERT INTO compliance_logs (level, module, message, details) VALUES (?, ?, ?, ?)",
+        "INSERT INTO audit_logs (level, module, message, details) VALUES (?, ?, ?, ?)",
         ("INFO", "DATABASE", "Database successfully initialized and seeded with 12 months of transactions.", f"Inserted {len(history)} records.")
     )
     conn.commit()
