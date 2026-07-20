@@ -88,9 +88,11 @@ sequenceDiagram
 | `/api/ingest` | `POST` | Upload CSV ledger — triggers ETL pipeline and model retraining |
 | `/api/kpis` | `GET` | Current KPIs: cash balance, burn rate, runway, net margin |
 | `/api/forecast` | `GET` | 12-month ML projections with confidence intervals |
+| `/api/forecast/whatif` | `POST` | What-If Scenario Simulator for interactive revenue/expense modeling |
 | `/api/chat` | `POST` | Interactive query to the AI Financial Analyst |
 | `/api/nist-audit` | `GET` | NIST AI RMF 1.0 audit checklist and governance logs |
 | `/api/system/status` | `GET` | System status, AI mode (`llm` or `offline`), version |
+| `/api/system/health` | `GET` | Extended health metrics including LLM cache statistics |
 
 ### Stack
 
@@ -99,7 +101,7 @@ sequenceDiagram
 | Backend | FastAPI (Python 3.10+) |
 | ML Forecasting | scikit-learn · Ridge Regression · NumPy · pandas |
 | Database | SQLite (zero-server, local-first) |
-| AI Narrative | Anthropic Claude (optional) · rule-based offline fallback |
+| AI Narrative | Anthropic Claude (optional) · SQLite LLM Cache (24h TTL) · rule-based offline fallback |
 | Dashboard | HTML + CSS + JavaScript · Chart.js |
 | Testing | pytest · httpx |
 | Data format | CSV — compatible with QuickBooks, Xero, Wave exports |
@@ -163,7 +165,7 @@ Check which mode is active:
 
 ```bash
 curl http://localhost:8000/api/system/status
-# {"status": "running", "ai_mode": "offline", "version": "0.2.0"}
+# {"status": "running", "ai_mode": "offline", "version": "1.0.0"}
 ```
 
 ---
@@ -250,7 +252,10 @@ AFIS/
 │   ├── test_etl.py              ← ETL pipeline tests
 │   ├── test_forecast.py         ← ML forecasting tests
 │   ├── test_api.py              ← FastAPI endpoint tests
-│   └── test_core.py             ← Integration tests
+│   ├── test_core.py             ← Integration tests
+│   ├── test_whatif.py           ← What-If simulator tests
+│   ├── test_llm_cache.py        ← SQLite cache tests
+│   └── test_token_harness.py    ← Token budget and PII guard tests
 ├── .env.example                 ← Environment variable template
 ├── CHANGELOG.md                 ← Full release history
 ├── CONTRIBUTING.md              ← Contribution guide
@@ -278,9 +283,9 @@ Areas where help is most needed:
 
 See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
-### Latest: v0.2.1
+### Latest: v1.0.0
 
-- Finalized README, updated badges, and revised architecture documentation
+- v1.0.0 Release: Otimização de Prompts (Strict JSON), LLM Cache (SQLite, 24h TTL), Token Budget Watcher, PII Guard e What-If Scenario Simulator.
 
 ---
 

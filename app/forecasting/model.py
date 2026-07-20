@@ -203,3 +203,74 @@ class CashFlowForecaster:
         conn.commit()
         conn.close()
         return predictions
+
+    @classmethod
+    def whatif_forecast(cls, income_delta_pct: float = 0.0, expense_delta_pct: float = 0.0) -> list:
+        """
+        Epic 5 — What-If Scenario Simulator.
+
+        Applies percentage overrides to the base Ridge Regression forecast and returns
+        a modified 12-month projection without re-training the model.
+
+        Args:
+            income_delta_pct:  % change in revenue (e.g. -20.0 = "20% revenue drop")
+            expense_delta_pct: % change in expenses (e.g. +10.0 = "10% cost increase")
+
+        Returns:
+            List of 12 monthly projections with adjusted income/expense/net values.
+
+        Performance: < 500ms (reads from forecasts table; no ML training).
+        """
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT date, predicted_income, predicted_expense, confidence_lower, confidence_upper FROM forecasts ORDER BY date ASC"
+        )
+        rows = cursor.fetchall()
+        conn.close()
+
+        # If no base forecast exists, generate it first
+        if not rows:
+            cls.train_and_forecast()
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT date, predicted_income, predicted_expense, confidence_lower, confidence_upper FROM forecasts ORDER BY date ASC"
+            )
+            rows = cursor.fetchall()
+            conn.close()
+
+        income_multiplier = 1.0 + (income_delta_pct / 100.0)
+        expense_multiplier = 1.0 + (expense_delta_pct / 100.0)
+
+        results = []
+        for row in rows:
+            adj_income = max(0.0, row[1] * income_multiplier)
+            adj_expense = max(0.0, row[2] * expense_multiplier)
+            adj_net = adj_income - adj_expense
+
+            # Scale confidence interval proportionally
+            base_net = row[1] - row[2]
+            ci_half = (row[4] - row[3]) / 2.0 if (row[4] - row[3]) > 0 else 200.0
+            adj_ci_half = ci_half * max(abs(income_multiplier), abs(expense_multiplier))
+
+            results.append({
+                "month": row[0],
+                "income": round(adj_income, 2),
+                "expense": round(adj_expense, 2),
+                "net": round(adj_net, 2),
+                "lower_bound": round(adj_net - adj_ci_half, 2),
+                "upper_bound": round(adj_net + adj_ci_half, 2),
+                "income_delta_pct": income_delta_pct,
+                "expense_delta_pct": expense_delta_pct
+            })
+
+        log_audit(
+            "INFO",
+            "ML_MODEL",
+            "What-If scenario simulation executed.",
+            f"income_delta={income_delta_pct}%, expense_delta={expense_delta_pct}%, months={len(results)}"
+        )
+
+        return results
+

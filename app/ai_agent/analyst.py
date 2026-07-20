@@ -102,19 +102,22 @@ class AIFinancialAnalyst:
         elif kpis["net_margin_percent"] >= 30:
             recommendations.append("HIGH MARGIN: Outstanding profit margin! Excellent operational leverage.")
 
-        # Generate AI narrative from computed metrics
-        narrative = generate_financial_narrative(kpis)
+        # Generate AI narrative — returns dict with JSON schema (health/summary/risk/action)
+        ai_analysis = generate_financial_narrative(kpis)
         
         # Structure report
         report = {
             "kpis": kpis,
             "warnings": warnings if warnings else ["None. Cash flow and margins are stable."],
             "recommendations": recommendations,
-            "narrative": narrative,
+            "ai_analysis": ai_analysis,
+            # Legacy "narrative" field kept for backward compatibility with existing frontend
+            "narrative": ai_analysis.get("summary", "") + " " + ai_analysis.get("risk", ""),
             "analyst_signature": "AFIS Cognitive Analyst AI (NIST Safety ID: AFIS-AGENT-10)"
         }
         
         return report
+
 
     @classmethod
     def answer_query(cls, user_message: str) -> str:

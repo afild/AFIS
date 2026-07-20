@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AFIS — AI Financial Intelligence System</title>
-    
+    <meta name="description" content="AFIS: AI-powered financial intelligence for U.S. small businesses. Real-time cash flow analysis, ML forecasting, and IRS-aligned scenario simulation. 100% free and open-source.">
+    <meta property="og:title" content="AFIS — AI Financial Intelligence System">
+    <meta property="og:description" content="Open-source AI CFO for small businesses. ML forecasting, What-If simulator, NIST AI RMF compliant.">
+    <meta property="og:type" content="website">
+
     <!-- Modern Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +29,7 @@
         <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo-container">
-                <i class="fa-solid fa-chart-line-up logo-icon"></i>
+                <i class="fa-solid fa-chart-line logo-icon"></i>
                 <div class="logo-text">
                     <span class="logo-title">AFIS</span>
                     <span class="logo-subtitle">Financial Intelligence</span>
@@ -33,14 +37,14 @@
             </div>
             
             <nav class="nav-menu">
-                <button class="nav-btn active" data-tab="dashboard">
+                <button class="nav-btn active" data-tab="dashboard" id="nav-dashboard">
                     <i class="fa-solid fa-table-columns"></i> Dashboard
                 </button>
-                <button class="nav-btn" data-tab="chat">
+                <button class="nav-btn" data-tab="chat" id="nav-chat">
                     <i class="fa-solid fa-robot"></i> AI CFO Agent
                 </button>
-                <button class="nav-btn" data-tab="audit">
-                    <i class="fa-solid fa-shield-halved"></i> NIST AI Audit & ETL
+                <button class="nav-btn" data-tab="audit" id="nav-audit">
+                    <i class="fa-solid fa-shield-halved"></i> NIST AI Audit &amp; ETL
                 </button>
             </nav>
             
@@ -49,7 +53,7 @@
                     <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
                     <div class="user-info">
                         <span class="username">Albert Oliveira</span>
-                        <span class="user-role">Founder & CEO</span>
+                        <span class="user-role">Founder &amp; CEO</span>
                     </div>
                 </div>
                 <div class="license-tag">MIT Open-Source</div>
@@ -67,7 +71,7 @@
                 </div>
                 <div class="header-badges">
                     <span class="badge badge-success"><i class="fa-solid fa-shield-check"></i> NIST AI RMF Aligned</span>
-                    <span class="badge badge-navy">v1.0.0</span>
+                    <span class="badge badge-navy" id="version-badge">v2.0.0</span>
                 </div>
             </header>
             
@@ -77,9 +81,9 @@
                 <!-- TAB 1: DASHBOARD -->
                 <section id="tab-dashboard" class="tab-panel active">
                     
-                    <!-- KPI CARDS GRID -->
+                    <!-- KPI CARDS GRID (4 cards) -->
                     <div class="kpi-grid">
-                        <div class="kpi-card">
+                        <div class="kpi-card animate-in" id="kpi-card-cash">
                             <div class="kpi-icon icon-cash"><i class="fa-solid fa-wallet"></i></div>
                             <div class="kpi-data">
                                 <span class="kpi-label">Current Cash Balance</span>
@@ -87,7 +91,7 @@
                                 <span class="kpi-trend text-success"><i class="fa-solid fa-arrow-trend-up"></i> Incls. Seed Capital</span>
                             </div>
                         </div>
-                        <div class="kpi-card">
+                        <div class="kpi-card animate-in" id="kpi-card-runway">
                             <div class="kpi-icon icon-runway"><i class="fa-solid fa-hourglass-half"></i></div>
                             <div class="kpi-data">
                                 <span class="kpi-label">Cash Runway</span>
@@ -95,7 +99,7 @@
                                 <span class="kpi-trend text-secondary" id="kpi-burnrate">Burn: $0/mo</span>
                             </div>
                         </div>
-                        <div class="kpi-card">
+                        <div class="kpi-card animate-in" id="kpi-card-margin">
                             <div class="kpi-icon icon-margin"><i class="fa-solid fa-chart-pie"></i></div>
                             <div class="kpi-data">
                                 <span class="kpi-label">Net Profit Margin</span>
@@ -103,10 +107,59 @@
                                 <span class="kpi-trend text-success" id="kpi-netprofit">Net: $0.00</span>
                             </div>
                         </div>
+                        <div class="kpi-card animate-in" id="kpi-card-cashflow">
+                            <div class="kpi-icon icon-cashflow"><i class="fa-solid fa-arrows-up-down"></i></div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Net Cash Flow (3m avg)</span>
+                                <h3 class="kpi-value" id="kpi-cashflow">$0.00</h3>
+                                <span class="kpi-trend text-secondary" id="kpi-cashflow-label">Monthly avg</span>
+                            </div>
+                        </div>
                     </div>
                     
-                    <!-- GRAPH CARD -->
-                    <div class="chart-container-card card-glass">
+                    <!-- WHAT-IF SIMULATOR PANEL -->
+                    <div class="whatif-panel animate-in">
+                        <div class="card-header">
+                            <div>
+                                <h3><i class="fa-solid fa-flask-vial" style="margin-right:8px;"></i>What-If Scenario Simulator</h3>
+                                <p class="text-secondary text-small">Adjust revenue and expense deltas to simulate financial scenarios in real-time.</p>
+                            </div>
+                            <span class="whatif-badge"><i class="fa-solid fa-bolt"></i> ML-Powered</span>
+                        </div>
+                        <div class="whatif-controls">
+                            <div class="slider-group">
+                                <div class="slider-label">
+                                    Revenue Change
+                                    <span class="slider-value" id="income-delta-display">0%</span>
+                                </div>
+                                <input type="range" id="income-slider" class="whatif-slider"
+                                    min="-50" max="50" value="0" step="1">
+                            </div>
+                            <div class="slider-group">
+                                <div class="slider-label">
+                                    Expense Change
+                                    <span class="slider-value" id="expense-delta-display">0%</span>
+                                </div>
+                                <input type="range" id="expense-slider" class="whatif-slider"
+                                    min="-50" max="50" value="0" step="1">
+                            </div>
+                        </div>
+                        <div class="whatif-actions">
+                            <button class="btn btn-primary" id="btn-run-simulation" onclick="runWhatIfSimulation()">
+                                <i class="fa-solid fa-play"></i> Run Simulation
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="resetWhatIf()">
+                                <i class="fa-solid fa-rotate-left"></i> Reset
+                            </button>
+                            <span class="text-secondary text-small" id="whatif-status"></span>
+                        </div>
+                        <div class="whatif-chart-wrapper">
+                            <canvas id="whatifChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- ML FORECAST GRAPH CARD -->
+                    <div class="chart-container-card card-glass animate-in">
                         <div class="card-header">
                             <div>
                                 <h3>ML Time-Series Forecasting</h3>
@@ -178,7 +231,6 @@
                         
                         <!-- CHAT SCROLL AREA -->
                         <div class="chat-history" id="chat-history-box">
-                            <!-- Greetings -->
                             <div class="chat-message incoming">
                                 <div class="msg-bubble">
                                     Hello! I am your virtual CFO AI. I have parsed the latest accounting ledger from SQLite and verified all governance parameters. Ask me anything about your current cash position, expense optimizations, or machine learning projections!
@@ -188,15 +240,15 @@
                         
                         <!-- QUICK PROMPT SUGGESTIONS -->
                         <div class="quick-prompts">
-                            <button class="btn-prompt" onclick="sendQuickPrompt('How is my cash health and runway?')">Check Runway</button>
-                            <button class="btn-prompt" onclick="sendQuickPrompt('Give me some recommendations to reduce expenses')">Reduce Expenses</button>
-                            <button class="btn-prompt" onclick="sendQuickPrompt('What is the ML forecast for next month?')">Show ML Forecasts</button>
+                            <button class="btn-prompt" id="prompt-runway" onclick="sendQuickPrompt('How is my cash health and runway?')">Check Runway</button>
+                            <button class="btn-prompt" id="prompt-expenses" onclick="sendQuickPrompt('Give me some recommendations to reduce expenses')">Reduce Expenses</button>
+                            <button class="btn-prompt" id="prompt-forecast" onclick="sendQuickPrompt('What is the ML forecast for next month?')">Show ML Forecasts</button>
                         </div>
                         
                         <!-- INPUT BOX -->
                         <div class="chat-input-area">
                             <input type="text" id="chat-input" placeholder="Type a message or click a suggestion..." onkeydown="if(event.key === 'Enter') sendMessage()">
-                            <button class="btn btn-primary" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i> Send</button>
+                            <button class="btn btn-primary" id="btn-chat-send" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i> Send</button>
                         </div>
                     </div>
                 </section>
@@ -214,7 +266,7 @@
                                 <i class="fa-solid fa-file-csv upload-icon"></i>
                                 <p>Drag and drop your transaction CSV here, or click to browse</p>
                                 <input type="file" id="file-input" accept=".csv" style="display:none">
-                                <button class="btn btn-primary" onclick="document.getElementById('file-input').click()"><i class="fa-solid fa-upload"></i> Upload CSV</button>
+                                <button class="btn btn-primary" id="btn-upload-csv" onclick="document.getElementById('file-input').click()"><i class="fa-solid fa-upload"></i> Upload CSV</button>
                             </div>
                             <div id="upload-status" class="upload-status"></div>
                             

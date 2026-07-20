@@ -11,6 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.0] — 2026-07-20
+
+### Added
+- What-If Scenario Simulator endpoint (`POST /api/forecast/whatif`) and frontend UI controls.
+- SQLite-backed LLM Cache with 24-hour TTL (`llm_cache` table) to improve token efficiency.
+- Token Budget Watcher and PII Guard in test harness to prevent excessive costs and data leakage.
+- New system health endpoint (`GET /api/system/health`) exposing cache statistics.
+
+### Changed
+- Refactored LLM prompt to output strict minified JSON, eliminating conversational overhead.
+- Updated FastAPI version in `main.py` and `README.md` to `1.0.0`.
+- Expanded test suite with `test_whatif.py`, `test_llm_cache.py`, and `test_token_harness.py`.
+
+---
+
 ## [0.2.1] — 2026-04-28
 
 ### Changed
@@ -103,7 +118,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/afild/AFIS/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/afild/AFIS/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/afild/AFIS/compare/v0.2.1...v1.0.0
 [0.2.1]: https://github.com/afild/AFIS/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/afild/AFIS/compare/v0.1.4...v0.2.0
 [0.1.4]: https://github.com/afild/AFIS/compare/v0.1.3...v0.1.4

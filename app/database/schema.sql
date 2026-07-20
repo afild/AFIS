@@ -30,3 +30,15 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     message TEXT NOT NULL,
     details TEXT                 -- JSON string or text for details
 );
+
+-- 4. LLM Response Cache (Epic 4 — Token Efficiency)
+-- Stores hashed prompt → response pairs to avoid duplicate API calls.
+-- TTL: 24 hours. Entries older than 86400 seconds are considered stale.
+CREATE TABLE IF NOT EXISTS llm_cache (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    prompt_hash TEXT NOT NULL UNIQUE,  -- SHA-256 hex of the full prompt string
+    response_json TEXT NOT NULL,       -- Minified JSON string returned by LLM
+    model TEXT NOT NULL,               -- Model identifier (e.g. claude-haiku-4-5-20251001)
+    tokens_used INTEGER DEFAULT 0,     -- Total tokens consumed (input + output)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

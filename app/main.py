@@ -9,7 +9,7 @@ from app.etl.ingestor import ETLIngestor
 from app.forecasting.model import CashFlowForecaster
 from app.ai_agent.analyst import AIFinancialAnalyst
 
-app = FastAPI(title="AFIS Core Framework API", version="0.2.0")
+app = FastAPI(title="AFIS Core Framework API", version="1.0.0")
 
 # Enable CORS for local testing
 app.add_middleware(
@@ -26,6 +26,11 @@ init_db()
 # Request model for chat endpoint
 class ChatRequest(BaseModel):
     message: str
+
+# Request model for What-If scenario simulator
+class WhatIfRequest(BaseModel):
+    income_delta_pct: float = 0.0   # e.g. -20.0 = "revenue drops 20%"
+    expense_delta_pct: float = 0.0  # e.g. +10.0 = "expenses rise 10%"
 
 @app.get("/api/kpis")
 def get_kpis():
@@ -79,6 +84,18 @@ def get_forecast():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/forecast/whatif")
+def get_whatif_forecast(payload: WhatIfRequest):
+    """Epic 5: What-If Scenario Simulator. Applies revenue/expense deltas to base forecast."""
+    try:
+        results = CashFlowForecaster.whatif_forecast(
+            income_delta_pct=payload.income_delta_pct,
+            expense_delta_pct=payload.expense_delta_pct
+        )
+        return {"scenario": results, "income_delta_pct": payload.income_delta_pct, "expense_delta_pct": payload.expense_delta_pct}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/api/chat")
 def chat_with_analyst(payload: ChatRequest):
     """Chat with the AI Financial Analyst virtual CFO."""
@@ -115,7 +132,37 @@ def system_status():
     return {
         "status": "running",
         "ai_mode": get_mode(),
-        "version": "0.2.0"
+        "version": "1.0.0"
+    }
+
+@app.get("/api/system/health")
+def system_health():
+    """Extended health check: returns AI mode, cache stats, and version."""
+    from app.llm_client import get_mode
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM llm_cache")
+        cache_total = cursor.fetchone()[0]
+        cursor.execute(
+            "SELECT COUNT(*) FROM llm_cache WHERE (julianday('now') - julianday(created_at)) * 86400 < 86400"
+        )
+        cache_active = cursor.fetchone()[0]
+        cursor.execute("SELECT COALESCE(SUM(tokens_used), 0) FROM llm_cache")
+        total_tokens = cursor.fetchone()[0]
+        conn.close()
+    except Exception:
+        cache_total = cache_active = total_tokens = 0
+
+    return {
+        "status": "running",
+        "ai_mode": get_mode(),
+        "version": "1.0.0",
+        "llm_cache": {
+            "total_entries": cache_total,
+            "active_entries_24h": cache_active,
+            "total_tokens_saved": total_tokens
+        }
     }
 
 # Mount Frontend static files
